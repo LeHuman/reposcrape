@@ -285,11 +285,10 @@ impl QueryInterface for GHQuery {
                         .await
                 }
                 None => Err(Box::from(format!(
-                    "Failed to extract user and repo from URL: {}",
-                    resolved_url
+                    "Failed to extract user and repo from URL: {resolved_url}"
                 ))),
             },
-            Err(err) => Err(Box::from(format!("Failed to resolve URL {}: {}", url, err))),
+            Err(err) => Err(Box::from(format!("Failed to resolve URL {url}: {err}"))),
         }
     }
 }
