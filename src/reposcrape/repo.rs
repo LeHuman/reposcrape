@@ -22,6 +22,7 @@ pub struct RepoDetails {
     pub children: Option<String>, // NOTE: Only relevant if this is a main repository for a project, ignored otherwise
     pub status: Option<String>,
     pub description: Option<String>,
+    pub why: Option<String>,
     pub logo: Option<String>,
     pub demo: Option<String>,
     pub highlight: Option<String>,
@@ -51,6 +52,7 @@ impl Display for RepoDetails {
         let children = self.children.show_or("None");
         let status = self.status.show_or("None");
         let description = self.description.show_or("None");
+        let why = self.why.show_or("None");
         let logo = self.logo.show_or("None");
         let demo = self.demo.show_or("None");
         let highlight = self.highlight.show_or("None");
@@ -69,6 +71,7 @@ impl Display for RepoDetails {
     children: {children}
     status: {status}
     description: {description}
+    why: {why}
     logo: {logo}
     demo: {demo}
     highlight: {highlight}"
@@ -196,7 +199,7 @@ impl Repo {
         let mut update: bool = false;
         for (key, val) in metadata {
             if !details.set(key, val) {
-                warn!("Failed to set {} {}", key, val);
+                warn!("Failed to set {} : {}", key, val);
             } else {
                 update = true;
             }
