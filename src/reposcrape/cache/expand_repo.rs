@@ -1,6 +1,11 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fmt::Display,
+};
 
-use tracing::warn;
+use reqwest::Url;
+use show_option::ShowOption;
+use tracing::{debug, error, trace, warn};
 
 use crate::reposcrape::{metadata::extract_urls, Project, Repo};
 
@@ -10,6 +15,24 @@ use super::repo::RepoScrapeCache;
 pub struct ExpandedRepoCache {
     pub repos: BTreeMap<String, Repo>,
     pub projects: BTreeMap<String, Project>,
+}
+
+impl Display for ExpandedRepoCache {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "\n----[ ExpandedRepoCache ]----")?;
+
+        writeln!(f, "\n----[ Individual Repos: {} ]----", self.repos.len())?;
+        for (_uid, repo) in &self.repos {
+            writeln!(f, "- Repo: {}", repo)?;
+        }
+
+        writeln!(f, "\n----[ Projects: {} ]----\n", self.projects.len())?;
+        for (_uid, project) in &self.projects {
+            writeln!(f, "--[ Project: {}", project)?;
+        }
+
+        Ok(())
+    }
 }
 
 impl ExpandedRepoCache {
@@ -87,12 +110,15 @@ impl ExpandedRepoCache {
 
         for project in expanded.projects.values() {
             let Some(repo) = &project.repo_main else {
+                debug!("Failed to get repo for {}", project.name);
                 continue;
             };
             let Some(details) = &repo.details else {
+                debug!("Failed to get details for {}", project.name);
                 continue;
             };
             let Some(children) = &details.children else {
+                debug!("Failed to get children for {}", project.name);
                 continue;
             };
 
@@ -106,21 +132,48 @@ impl ExpandedRepoCache {
             warn!("Searching project {} child urls", project.name);
 
             let mut repo_urls = Vec::new();
+            let mut repo_responses = Vec::new();
+            let mut child_responses = Vec::new();
 
-            // TODO: check response status?
             for repo in &project.repo_sub {
-                if let Ok(resp) = client.get(&repo.url).send().await {
-                    repo_urls.push(resp.url().to_owned());
-                }
+                repo_responses.push(client.get(&repo.url).send());
             }
 
             for child_url in extracted_urls {
-                if let Ok(resp) = client.get(child_url).send().await {
-                    let final_url = resp.url();
-                    if !repo_urls.contains(final_url) {
-                        warn!("Requesting child URL that was not listed {}", &final_url);
-                        // TODO: Request Repo object from child url 'final_url'
+                child_responses.push(client.get(child_url).send());
+            }
+
+            let mut failed_responses = Vec::new();
+
+            for response in repo_responses {
+                let response = response.await;
+                if let Ok(resp) = response {
+                    repo_urls.push(resp.url().to_owned());
+                } else if let Err(resp) = response {
+                    failed_responses.push(resp);
+                }
+            }
+
+            for response in child_responses {
+                match response.await {
+                    Ok(result) => {
+                        let final_url = result.url();
+                        if !repo_urls.contains(final_url) {
+                            warn!("Requesting child URL that was not listed {}", &final_url);
+                            // TODO: Request Repo object from child url 'final_url'
+                        }
                     }
+                    Err(result) => failed_responses.push(result),
+                }
+            }
+
+            for failed in failed_responses {
+                let url = failed.url();
+                let url = url.show_or("INVALID_URL");
+
+                match failed.status() {
+                    Some(status) => error!("Status {} for {}", status, url),
+                    None => error!("Generic Error for {}", url),
                 }
             }
         }

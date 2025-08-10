@@ -1,9 +1,10 @@
 use localsavefile::localsavefile;
 use set_field::SetField;
-use std::{cmp::Ordering, collections::HashMap};
+use show_option::ShowOption;
+use std::{cmp::Ordering, collections::HashMap, fmt::Display};
 use tracing::warn;
 
-use crate::date::EpochType;
+use crate::date::{Epoch, EpochType};
 
 // TODO: map details to color codes if possible, look into phf crate for static maps
 
@@ -23,6 +24,53 @@ pub struct RepoDetails {
     pub description: Option<String>,
     pub logo: Option<String>,
     pub highlight: Option<String>,
+}
+
+fn vec_str<T: Display>(vec: &Option<Vec<T>>) -> String {
+    match vec {
+        Some(vec) => vec
+            .iter()
+            .map(|item| item.to_string())
+            .collect::<Vec<_>>()
+            .join(", "),
+        None => "None".to_string(),
+    }
+}
+
+impl Display for RepoDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let project = self.project.show_or("None");
+        let is_main = self.main.is_some();
+        let title = self.title.show_or("None");
+        let fonts = vec_str(&self.font);
+        let colors = vec_str(&self.color);
+        let keywords = vec_str(&self.keywords);
+        let languages = vec_str(&self.languages);
+        let technology = vec_str(&self.technology);
+        let children = self.children.show_or("None");
+        let status = self.status.show_or("None");
+        let description = self.description.show_or("None");
+        let logo = self.logo.show_or("None");
+        let highlight = self.highlight.show_or("None");
+
+        write!(
+            f,
+            "
+    project: {project}
+    is_main: {is_main}
+    title: {title}
+    fonts: {fonts}
+    colors: {colors}
+    keywords: {keywords}
+    languages: {languages}
+    technology: {technology}
+    children: {children}
+    status: {status}
+    description: {description}
+    logo: {logo}
+    highlight: {highlight}"
+        )
+    }
 }
 
 impl RepoDetails {
@@ -85,6 +133,22 @@ pub struct Repo {
     pub last_sync: EpochType,
     pub last_update: EpochType,
     pub details: Option<RepoDetails>,
+}
+
+impl Display for Repo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "{} by {}\n  sync: {}\n  update: {}\n  URL: {}\n  origin: {}\n  uid: {}\n  details: {}",
+            self.name,
+            self.owner,
+            Epoch::to_string(self.last_sync),
+            Epoch::to_string(self.last_update),
+            self.url,
+            self.origin,
+            self.uid,
+            self.details.show_or("None")
+        ))
+    }
 }
 
 // TODO: Ensure comparing date strings works

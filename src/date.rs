@@ -22,4 +22,8 @@ impl Epoch {
             .expect("Failed to get epoch time")
             .as_millis()
     }
+
+    pub fn to_string(epoch: EpochType) -> String {
+        Epoch::to_rfc3339(epoch).unwrap_or("INVALID_DATE".to_string())
+    }
 }

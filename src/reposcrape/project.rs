@@ -1,6 +1,8 @@
+use show_option::ShowOption;
+
 use super::Repo;
 
-use std::collections::BTreeSet;
+use std::{collections::BTreeSet, fmt::Display};
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Project {
@@ -8,6 +10,24 @@ pub struct Project {
     pub description: Option<String>,
     pub repo_main: Option<Repo>,
     pub repo_sub: BTreeSet<Repo>,
+}
+
+impl Display for Project {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(
+            f,
+            "{}\n {}",
+            self.name,
+            self.description.show_or("No Description")
+        )?;
+
+        writeln!(f, "- Main Repo: {}", self.repo_main.show_or("None"))?;
+
+        for repo in &self.repo_sub {
+            writeln!(f, "- SubRepo: {}", repo)?;
+        }
+        Ok(())
+    }
 }
 
 impl Project {
