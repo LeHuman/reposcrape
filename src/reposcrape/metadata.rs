@@ -70,8 +70,7 @@ impl Metadata {
             let full_line = captured_line.to_uppercase();
             let captures = re.captures(&full_line);
 
-            if captures.is_some() {
-                let result = captures.expect("Failed to capture line regex");
+            if let Some(result) = captures {
                 if result.name("name").is_some() {
                     let name = result
                         .name("name")
@@ -97,8 +96,7 @@ impl Metadata {
                 keyword_trigger = "";
             }
             let captures = re.captures(line);
-            if captures.is_some() {
-                let result = captures.expect("Failed to capture line regex");
+            if let Some(result) = captures {
                 if result.name("keyword").is_some() {
                     keyword_trigger = result
                         .name("keyword")

@@ -27,11 +27,6 @@ pub trait Update<T> {
     fn update(&mut self, other: &T);
 }
 
-#[derive(Savefile)]
-struct Data {
-    data: std::collections::BTreeMap<u32, u32>,
-}
-
 #[localsavefile_impl]
 #[derive(Eq, PartialEq, Savefile)]
 pub struct RepoScrapeCache {
