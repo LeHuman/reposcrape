@@ -24,7 +24,7 @@ impl Display for Project {
         writeln!(f, "- Main Repo: {}", self.repo_main.show_or("None"))?;
 
         for repo in &self.repo_sub {
-            writeln!(f, "- SubRepo: {}", repo)?;
+            writeln!(f, "- SubRepo: {repo}")?;
         }
         Ok(())
     }

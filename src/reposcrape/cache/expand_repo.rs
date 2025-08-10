@@ -3,9 +3,8 @@ use std::{
     fmt::Display,
 };
 
-use reqwest::Url;
 use show_option::ShowOption;
-use tracing::{debug, error, trace, warn};
+use tracing::{debug, error, warn};
 
 use crate::reposcrape::{metadata::extract_urls, Project, Repo};
 
@@ -22,13 +21,13 @@ impl Display for ExpandedRepoCache {
         writeln!(f, "\n----[ ExpandedRepoCache ]----")?;
 
         writeln!(f, "\n----[ Individual Repos: {} ]----", self.repos.len())?;
-        for (_uid, repo) in &self.repos {
-            writeln!(f, "- Repo: {}", repo)?;
+        for repo in self.repos.values() {
+            writeln!(f, "- Repo: {repo}")?;
         }
 
         writeln!(f, "\n----[ Projects: {} ]----\n", self.projects.len())?;
-        for (_uid, project) in &self.projects {
-            writeln!(f, "--[ Project: {}", project)?;
+        for project in self.projects.values() {
+            writeln!(f, "--[ Project: {project}")?;
         }
 
         Ok(())
