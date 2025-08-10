@@ -33,7 +33,7 @@ pub async fn extract_resolved_urls(client: &Client, input: &Vec<&str>) -> Vec<St
 
 pub struct Metadata;
 
-const URL_KEYWORDS: &[&str] = &["HIGHLIGHT", "LOGO"]; // IMPROVE: Generalize url captures
+const URL_KEYWORDS: &[&str] = &["HIGHLIGHT", "LOGO", "DEMO"]; // IMPROVE: Generalize url captures
 
 impl Metadata {
     pub async fn resolve_meta_urls(raw_url: &String, data: &mut HashMap<String, String>) {

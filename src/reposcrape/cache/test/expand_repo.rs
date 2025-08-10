@@ -35,6 +35,7 @@ pub fn test_expand_cache() -> Result<(), Box<dyn std::error::Error>> {
             main: Some("".into()),
             children: None,
             logo: None,
+            demo: None,
             highlight: None,
         }),
     });
@@ -61,6 +62,7 @@ pub fn test_expand_cache() -> Result<(), Box<dyn std::error::Error>> {
             main: Some("this".into()),
             children: None,
             logo: None,
+            demo: None,
             highlight: None,
         }),
     });
@@ -87,6 +89,7 @@ pub fn test_expand_cache() -> Result<(), Box<dyn std::error::Error>> {
             main: None,
             children: None,
             logo: None,
+            demo: None,
             highlight: None,
         }),
     });

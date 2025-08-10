@@ -23,6 +23,7 @@ pub struct RepoDetails {
     pub status: Option<String>,
     pub description: Option<String>,
     pub logo: Option<String>,
+    pub demo: Option<String>,
     pub highlight: Option<String>,
 }
 
@@ -51,6 +52,7 @@ impl Display for RepoDetails {
         let status = self.status.show_or("None");
         let description = self.description.show_or("None");
         let logo = self.logo.show_or("None");
+        let demo = self.demo.show_or("None");
         let highlight = self.highlight.show_or("None");
 
         write!(
@@ -68,6 +70,7 @@ impl Display for RepoDetails {
     status: {status}
     description: {description}
     logo: {logo}
+    demo: {demo}
     highlight: {highlight}"
         )
     }
