@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.6] - 2025-08-12
+
+### 🚀 Features
+
+- :zap: More extensive language color capture
+
+### 📚 Documentation
+
+- :memo: Update CHANGELOG.md
+
+### ⚙️ Miscellaneous Tasks
+
+- :bookmark: Release v0.1.6
 ## [0.1.5] - 2025-08-12
 
 ### 🐛 Bug Fixes
