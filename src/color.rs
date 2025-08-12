@@ -4,7 +4,7 @@ use std::collections::HashMap; // IMPROVE: Serialized size of HashMap vs BTreeMa
 
 pub async fn fetch_language_colors() -> Result<HashMap<String, String>, Box<dyn std::error::Error>>
 {
-    let url = "https://github.com/github-linguist/linguist/raw/master/lib/linguist/languages.yml";
+    let url = "https://github.com/github-linguist/linguist/raw/main/lib/linguist/languages.yml";
     let response = get(url).await?.text().await?;
 
     #[derive(Debug, Deserialize)]
