@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2025-08-12
+
+### 🐛 Bug Fixes
+
+- :ambulance: Update colors URL
+- :adhesive_bandage: Add language case variants
+
+### ⚙️ Miscellaneous Tasks
+
+- :memo: Update CHANGELOG.md
+- :bookmark: Release v0.1.5
 ## [0.1.4] - 2025-08-10
 
 ### 🚀 Features
