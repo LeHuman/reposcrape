@@ -20,6 +20,8 @@ pub async fn fetch_language_colors() -> Result<HashMap<String, String>, Box<dyn 
     for (lang, info) in languages.iter() {
         if let Some(color) = &info.color {
             language_colors.insert(lang.clone(), color.clone());
+            language_colors.insert(lang.to_lowercase(), color.clone());
+            language_colors.insert(lang.to_uppercase(), color.clone());
         }
     }
 
