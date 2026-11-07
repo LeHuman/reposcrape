@@ -1,0 +1,93 @@
+name: Auto Release
+on:
+  schedule:
+    # At 00:00 on Sunday
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+permissions: write-all
+jobs:
+  check-changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Check for Changes
+        id: check
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No tags found, releasing"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          elif [ "$(git rev-list "$LATEST_TAG"..HEAD --count)" -gt 0 ]; then
+            echo "Found commits since $LATEST_TAG, releasing"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No commits since $LATEST_TAG"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+  auto-release:
+    name: Auto Release
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.has_changes == 'true'
+    steps:
+      - name: GitHub Checks
+        uses: poseidon/wait-for-status-checks@v0.7.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          timeout: 500
+          ignore: ${{ github.workflow }}
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Git Set User
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Bump Version
+        run: |
+          VERSION=$(grep -m1 '^version = ' Cargo.toml | cut -d '"' -f 2)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+          echo "VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+          sed -i "s/^version = \"$VERSION\"/version = \"$NEW_VERSION\"/" Cargo.toml
+          cargo update -p reposcrape
+      - name: Update CHANGELOG.md
+        uses: orhun/git-cliff-action@v4
+        with:
+          args: --tag v${{ env.VERSION }}
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+      - name: Run security audit
+        uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run tests
+        run: cargo test --all-features --workspace
+      - name: Check formatting
+        run: cargo fmt --all --check
+      - name: Clippy check
+        run: cargo clippy --all-targets --all-features --workspace -- -D warnings
+      - name: Check documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --document-private-items --all-features --workspace --examples
+      - name: Commit and push release
+        run: |
+          git add Cargo.toml Cargo.lock CHANGELOG.md
+          git commit -m "chore: :bookmark: Release v${{ env.VERSION }}"
+          git push origin main
+          git tag "v${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
