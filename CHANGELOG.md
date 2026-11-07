@@ -1,12 +1,18 @@
+## [0.1.8] - 2026-11-07
+
+### ⚙️ Miscellaneous Tasks
+
+- :construction_worker: Add dependabot auto-merge and weekly auto-release
 ## [0.1.7] - 2026-11-07
-
-### 💼 Other
-
-- *(deps)* :arrow_up: Update all dependencies to latest
 
 ### 📚 Documentation
 
 - :memo: Update CHANGELOG.md
+- :memo: Update CHANGELOG.md
+
+### 💼 Other
+
+- *(deps)* :arrow_up: Update all dependencies to latest
 ## [0.1.6] - 2025-08-12
 
 ### 🚀 Features
@@ -132,15 +138,9 @@
 - :bug: Fix async runtimes
 - :pushpin: Remove dependency path
 
-### 💼 Other
+### 📚 Documentation
 
-- :heavy_plus_sign: Add all dependencies
-- :heavy_minus_sign: Remove unused dependencies
-- *(deps)* Bump prantlf/delete-cache-action from 2 to 3
-- :heavy_minus_sign: Remove slug
-- :building_construction: Make library and update dependencies
-- :pushpin: Up versions
-- :heavy_minus_sign: Remove dev dependency
+- :memo: TODO: Optimize for memory in map used for colors
 
 ### 🚜 Refactor
 
@@ -157,10 +157,6 @@
 - :recycle: Integrate GitHub adapter
 - :wastebasket: remove bincode
 - :recycle: Clear up Clippy warnings
-
-### 📚 Documentation
-
-- :memo: TODO: Optimize for memory in map used for colors
 
 ### 🎨 Styling
 
@@ -202,3 +198,13 @@
 - :wrench: Add Cargo.lock
 - :green_heart: Add default CI/CD
 - :memo: Rename to reposcrape
+
+### 💼 Other
+
+- :heavy_plus_sign: Add all dependencies
+- :heavy_minus_sign: Remove unused dependencies
+- *(deps)* Bump prantlf/delete-cache-action from 2 to 3
+- :heavy_minus_sign: Remove slug
+- :building_construction: Make library and update dependencies
+- :pushpin: Up versions
+- :heavy_minus_sign: Remove dev dependency
