@@ -1,8 +1,14 @@
+## [0.1.9] - 2026-11-07
+
+### ⚙️ Miscellaneous Tasks
+
+- :construction_worker: Publish to crates.io inside the release job
 ## [0.1.8] - 2026-11-07
 
 ### ⚙️ Miscellaneous Tasks
 
 - :construction_worker: Add dependabot auto-merge and weekly auto-release
+- :bookmark: Release v0.1.8
 ## [0.1.7] - 2026-11-07
 
 ### 📚 Documentation
