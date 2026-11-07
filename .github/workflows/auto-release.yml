@@ -91,3 +91,7 @@ jobs:
           git push origin main
           git tag "v${{ env.VERSION }}"
           git push origin "v${{ env.VERSION }}"
+      - name: Publish reposcrape
+        run: cargo publish -p reposcrape
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
