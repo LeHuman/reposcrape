@@ -1,5 +1,9 @@
 ## [0.1.7] - 2026-11-07
 
+### 💼 Other
+
+- *(deps)* :arrow_up: Update all dependencies to latest
+
 ### 📚 Documentation
 
 - :memo: Update CHANGELOG.md
