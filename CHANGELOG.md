@@ -1,8 +1,15 @@
+## [0.1.10] - 2026-11-08
+
+### ⚙️ Miscellaneous Tasks
+
+- :construction_worker: Extend auto-merge with mechanical autofixes and Copilot bridge
+- :construction_worker: Drop Copilot bridge, comment on PR instead
 ## [0.1.9] - 2026-11-07
 
 ### ⚙️ Miscellaneous Tasks
 
 - :construction_worker: Publish to crates.io inside the release job
+- :bookmark: Release v0.1.9
 ## [0.1.8] - 2026-11-07
 
 ### ⚙️ Miscellaneous Tasks
